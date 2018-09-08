@@ -1,6 +1,6 @@
 from io import open
 
-import torch
+import os, shutil, torch
 from setuptools import setup, find_packages
 import distutils.command.clean
 from torch.utils.cpp_extension import CppExtension
@@ -45,7 +45,7 @@ with open('torch_complex/__init__.py', 'r') as f:
     else:
         version = '0.0.1'
 
-with open('README.rst', 'r', encoding='utf-8') as f:
+with open('README.md', 'r', encoding='utf-8') as f:
     readme = f.read()
 
 REQUIRES = []
