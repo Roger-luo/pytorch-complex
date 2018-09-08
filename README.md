@@ -12,12 +12,14 @@ python setup.py build
 python setup.py test
 ```
 
-Due to this issue: https://github.com/pytorch/extension-cpp/issues/6
+```python
+from torch_complex import torch
+```
 
-you need to import `torch` first.
+or
 
 ```python
-import torch, torch_complex
+import torch_complex.torch as torch
 ```
 
 then the complex tensor support will be in `torch` module. Use it just like the other tensor types.
