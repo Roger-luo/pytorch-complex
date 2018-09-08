@@ -1,11 +1,11 @@
 [metadata]
-name = 'torch-complex'
+name = 'pytorch-complex'
 version = '0.0.1'
-description = ''
-author = 'U.N. Owen'
-author_email = 'me@un.known'
-license = 'MIT/Apache-2.0'
-url = 'https://github.com/_/torch-complex'
+description = 'Complex tensor support for PyTorch'
+author = 'Roger Luo'
+author_email = 'rogerluo.rl18@gmail.com'
+license = 'MIT'
+url = 'https://github.com/Roger-luo/pytorch-complex'
 
 [requires]
 python_version = ['2.7', '3.5', '3.6', 'pypy', 'pypy3']
