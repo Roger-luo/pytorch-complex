@@ -4,6 +4,8 @@ Complex-valued tensor support for [PyTorch](https://github.com/pytorch/pytorch).
 
 ## Usage
 
+**Warning**: this package may require a fresh new build of the PyTorch master branch.
+
 Build this plugin just like a normal Python package:
 
 ```sh
