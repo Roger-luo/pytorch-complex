@@ -1,4 +1,5 @@
 #include "CPUComplexType.h"
+#include "Utils.h"
 
 namespace at {
 
@@ -19,8 +20,20 @@ TypeID CPUComplexType<PT>::ID() const {
 
 template <typename PT>
 size_t CPUComplexType<PT>::elementSizeInBytes() const {
-    return sizeof(PT);
+    return 2 * sizeof(PT);
 }
+
+template <typename PT>
+int64_t CPUComplexType<PT>::storage_offset(const Tensor & self) const {
+    // DeviceGuard omitted
+    auto self_ = checked_tensor_unwrap(self, "self", 1, false, Backend::CPU, CPUComplexTypeInfo<PT>::scalar_type);
+    return static_cast<int64_t>(self_->storage_offset());
+}
+
+// template <typename PT>
+// Tensor & CPUComplexType<PT>::resize_(Tensor & self, IntList size) const {
+
+// }
 
 template <typename PT>
 Tensor CPUComplexType<PT>::tensor(Storage storage, int64_t storageOffset, IntList sizes, IntList strides) const {
@@ -65,38 +78,16 @@ Tensor CPUComplexType<PT>::tensor(IntList sizes, IntList strides) const {
 
 template <typename PT>
 Tensor CPUComplexType<PT>::tensor(IntList size) const {
-    // TODO: Upstream this
-    int64_t numel = 1;
-    for (auto s : size) {
-        numel *= s;
-    }
-
-    Storage s{c10::make_intrusive<StorageImpl>(
-        scalarTypeToDataType(CPUComplexTypeInfo<PT>::scalar_type),
-        numel,
-        getCPUAllocator(),
-        /* resizable */ true)};
-    Tensor t{c10::make_intrusive<TensorImpl, UndefinedTensor>(
-        std::move(s),
-        at::CPUTensorId(),
-        /* is_variable */ false)};
-    return t;
+    auto _strides = calculate_contiguous_stride(size);
+    IntList strides{_strides};
+    return tensor(size, strides);
 }
 
 
-template <typename PT>
-Tensor & CPUComplexType<PT>::s_copy_(Tensor & dst, const Tensor & src, bool non_blocking) const {
-    AT_ERROR("not yet supported");
-}
-
-template <typename PT>
-Tensor & CPUComplexType<PT>::_s_copy_from(const Tensor & src, Tensor & dst, bool non_blocking) const {
-    AT_ERROR("not yet supported");
-}
 
 template <>
 inline const char * CPUComplexType<float>::toString() const {
-    return "CPUComplexType<float>";
+    return "CPUComplexTensor<float>";
 }
 
 template <>
