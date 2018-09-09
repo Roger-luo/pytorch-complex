@@ -18,7 +18,7 @@ struct CPUComplexType: public at::CPUTypeDefault {
     size_t elementSizeInBytes() const override;
     TypeID ID() const override;
     Tensor & s_copy_(Tensor & self, const Tensor & src, bool non_blocking) const override;
-    // Tensor & _s_copy_from(const Tensor & self, Tensor & dst, bool non_blocking) const override;
+    Tensor & _s_copy_from(const Tensor & self, Tensor & dst, bool non_blocking) const override;
 
     int64_t storage_offset(const Tensor & self) const override;
     // Tensor & resize_(Tensor & self, IntList size) const override;

@@ -79,12 +79,22 @@ struct CPUCopy {
     }
 };
 
+// copy from complex to real
+template <typename DST, typename SRC>
+struct CPUCopy<DST, std::complex<SRC>> {
+    inline static void eval(TensorImpl *dst, TensorImpl *src) {
+        TH_TENSOR_APPLY2(
+            DST, dst,
+            std::complex<SRC>, src,
+            *dst_data = static_cast<DST>(static_cast<inter_copy_type_t<SRC>>((*src_data).real()));
+        )
+    }
+};
+
+
 template <typename PT>
 Tensor & CPUComplexType<PT>::s_copy_(Tensor & dst, const Tensor & src, bool non_blocking) const {
     checked_tensor_unwrap(dst, "dst", 0, false, Backend::CPU, CPUComplexTypeInfo<PT>::scalar_type);
-
-    std::cout << "src type" << (TypeID::CPUComplexDouble == src.type().ID()) << std::endl;
-    std::cout << "dst type" << (TypeID::CPULong == src.type().ID()) << std::endl;
 
     switch (src.type().ID()) {
         case TypeID::CPUByte:
@@ -94,6 +104,7 @@ Tensor & CPUComplexType<PT>::s_copy_(Tensor & dst, const Tensor & src, bool non_
             CPUCopy<std::complex<PT>, int8_t>::eval(dst.unsafeGetTensorImpl(), src.unsafeGetTensorImpl());
             break;
         case TypeID::CPUDouble:
+            std::cout << "double is copied to complex" << std::endl;
             CPUCopy<std::complex<PT>, double>::eval(dst.unsafeGetTensorImpl(), src.unsafeGetTensorImpl());
             break;
         case TypeID::CPUFloat:
@@ -118,18 +129,45 @@ Tensor & CPUComplexType<PT>::s_copy_(Tensor & dst, const Tensor & src, bool non_
             std::cout << "copy half" << std::endl;
             break;
         default:
-            std::cout << "not implemented" << std::endl;
-            //return src.type()._s_copy_from(src, dst, non_blocking);
+            return src.type()._s_copy_from(src, dst, non_blocking);
     }
 
     dst.unsafeGetTensorImpl()->maybe_zero_dim(src.dim() == 0);
     return dst;
 }
 
-// template <typename PT>
-// Tensor & CPUComplexType<PT>::_s_copy_from(const Tensor & src, Tensor & dst, bool non_blocking) const {
-//     AT_ERROR("copy does not support ", src.type().toString(), " to ", dst.type().toString(), " copy (s_copy_from case).");
-// }
+template <typename PT>
+Tensor & CPUComplexType<PT>::_s_copy_from(const Tensor & src, Tensor & dst, bool non_blocking) const {
+    // This handles the copy from other types
+
+    switch (dst.type().ID()) {
+        case TypeID::CPUByte:
+            CPUCopy<int8_t, std::complex<PT>>::eval(dst.unsafeGetTensorImpl(), src.unsafeGetTensorImpl());
+            break;
+        case TypeID::CPUChar:
+            CPUCopy<int8_t, std::complex<PT>>::eval(dst.unsafeGetTensorImpl(), src.unsafeGetTensorImpl());
+            break;
+        case TypeID::CPUDouble:
+            CPUCopy<double, std::complex<PT>>::eval(dst.unsafeGetTensorImpl(), src.unsafeGetTensorImpl());
+            break;
+        case TypeID::CPUFloat:
+            CPUCopy<float, std::complex<PT>>::eval(dst.unsafeGetTensorImpl(), src.unsafeGetTensorImpl());
+            break;
+        case TypeID::CPUInt:
+            CPUCopy<int32_t, std::complex<PT>>::eval(dst.unsafeGetTensorImpl(), src.unsafeGetTensorImpl());
+            break;
+        case TypeID::CPULong:
+            CPUCopy<int64_t, std::complex<PT>>::eval(dst.unsafeGetTensorImpl(), src.unsafeGetTensorImpl());
+            break;
+        case TypeID::CPUShort:
+            CPUCopy<int16_t, std::complex<PT>>::eval(dst.unsafeGetTensorImpl(), src.unsafeGetTensorImpl());
+            break;
+        default:
+            AT_ERROR("copy does not support ", src.type().toString(), " to ", dst.type().toString(), " copy (s_copy_from case).");
+    }
+    dst.unsafeGetTensorImpl()->maybe_zero_dim(src.dim() == 0);
+    return dst;
+}
 
 } // at
 
