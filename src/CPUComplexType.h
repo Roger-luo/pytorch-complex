@@ -26,6 +26,16 @@ struct CPUComplexType: public at::CPUTypeDefault {
     Tensor tensor(Storage storage, int64_t storageOffset, IntList sizes, IntList strides) const override;
     Tensor tensor(IntList sizes, IntList strides) const override;
     Tensor tensor(IntList size) const override;
+    Tensor tensor() const override;
+
+    Tensor & set_(Tensor & self, Storage source, int64_t storage_offset, IntList size, IntList stride) const override;
+    // Tensor & set_(Tensor & self, Storage source) const override;
+    // Tensor & set_(Tensor & self, const Tensor & source) const override;
+    // Tensor & set_(Tensor & self) const override;
+
+    void* data_ptr(const Tensor & self) const override;
+    Scalar _local_scalar_dense(const Tensor & self) const override;
+
 };
 
 } // namespace at
