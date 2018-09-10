@@ -7,5 +7,10 @@ class TestComplexTensor(unittest.TestCase):
         torch.empty(2, 2, dtype=torch.complex64)
         torch.empty(2, 2, dtype=torch.complex128)
 
+    def test_indexing(self):
+        t = torch.empty(2, 2, dtype=torch.complex128)
+        t[1]
+
+
 if __name__ == '__main__':
     unittest.main()
