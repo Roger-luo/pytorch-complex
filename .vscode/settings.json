@@ -1,0 +1,25 @@
+{
+    "python.venvPath": "/Users/roger/.virtualenvs",
+    "python.pythonPath": "/Users/roger/.virtualenvs/torch/bin/python",
+    "files.associations": {
+        "forward_list": "cpp",
+        "list": "cpp",
+        "string": "cpp",
+        "valarray": "cpp",
+        "vector": "cpp",
+        "__bit_reference": "cpp",
+        "__string": "cpp",
+        "algorithm": "cpp",
+        "string_view": "cpp",
+        "__config": "cpp",
+        "__nullptr": "cpp",
+        "cstddef": "cpp",
+        "exception": "cpp",
+        "initializer_list": "cpp",
+        "new": "cpp",
+        "stdexcept": "cpp",
+        "type_traits": "cpp",
+        "typeinfo": "cpp",
+        "variant": "cpp"
+    }
+}
