@@ -1,5 +1,7 @@
 #include "CPUComplexType.h"
 #include "Utils.h"
+#include "ComplexTensorApply.h"
+#include "SIMD/SIMD.h"
 
 namespace at {
 
@@ -39,7 +41,7 @@ Tensor CPUComplexType<PT>::tensor(Storage storage, int64_t storageOffset, IntLis
     auto storage_ = checked_storage(storage, "storage", 1, DeviceType::CPU, at::scalarTypeToDataType(CPUComplexTypeInfo<PT>::scalar_type));
 
     // make tensor
-    auto self = c10::make_intrusive<TensorImpl, UndefinedTensor>(
+    auto self = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(
         /* storage */ std::move(storage_),
         /* tensor type id */ at::CPUTensorId(),
         /* is_variable */ false);
@@ -87,7 +89,7 @@ Tensor CPUComplexType<PT>::tensor() const {
         /* resizable */ true)};
 
     // make tensor
-    Tensor t{c10::make_intrusive<TensorImpl, UndefinedTensor>(
+    Tensor t{c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(
         /* storage */ std::move(s),
         /* tensor type id */ at::CPUTensorId(),
         /* is_variable */ false)};
@@ -125,16 +127,51 @@ Tensor & CPUComplexType<PT>::set_(Tensor & self, Storage source, int64_t storage
     return self;
 }
 
-template <typename PT>
-Tensor & CPUComplexType<PT>::_fill_(Tensor & self, Scalar value) const {
+template <>
+Tensor & CPUComplexType<double>::_fill_(Tensor & self, Scalar value) const {
     const DeviceGuard device_guard(self);
-    auto self_ = checked_tensor_unwrap(self,"self",1, false, Backend::CPU, ScalarType::Float);
-    auto value_ = value.to<std::complex<PT>>();
+    auto self_ = checked_tensor_unwrap(self,"self",1, false, Backend::CPU, CPUComplexTypeInfo<double>::scalar_type);
+    auto value_ = value.to<std::complex<double>>();
 
     if(self_->is_contiguous() || is_transposed(self_)) {
+        TH_TENSOR_APPLY_CONTIG(std::complex<double>, self_, simd::Default<std::complex<double>>::fill(self__data, value_, self__len); );
+    } else {
+        TH_TENSOR_APPLY(std::complex<double>, self_,
+            if (self__stride == 1) {
+                simd::Default<std::complex<double>>::fill(self__data, value_, self__size);
+	            self__i = self__size;
+	            self__data += self__stride * self__size;
+	            break;
+            } else {
+                *self__data = value_;
+            }
+        );
     }
 
-    THFloatTensor_fill(self_, value_);
+    return self;
+}
+
+template <>
+Tensor & CPUComplexType<float>::_fill_(Tensor & self, Scalar value) const {
+    const DeviceGuard device_guard(self);
+    auto self_ = checked_tensor_unwrap(self,"self",1, false, Backend::CPU, CPUComplexTypeInfo<float>::scalar_type);
+    auto value_ = value.to<std::complex<float>>();
+
+    if(self_->is_contiguous() || is_transposed(self_)) {
+        TH_TENSOR_APPLY_CONTIG(std::complex<float>, self_, simd::Default<std::complex<float>>::fill(self__data, value_, self__len); );
+    } else {
+        TH_TENSOR_APPLY(std::complex<float>, self_,
+            if (self__stride == 1) {
+                simd::Default<std::complex<float>>::fill(self__data, value_, self__size);
+	            self__i = self__size;
+	            self__data += self__stride * self__size;
+	            break;
+            } else {
+                *self__data = value_;
+            }
+        );
+    }
+
     return self;
 }
 

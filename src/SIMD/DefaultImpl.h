@@ -19,7 +19,7 @@ inline void Default<T>::copy(T *y, const T *x, const ptrdiff_t n) {
 }
 
 template <typename T>
-inline void Default<T>::fill(T *y, const T c, const ptrdiff_t n) {
+inline void Default<T>::fill(T *x, const T c, const ptrdiff_t n) {
     ptrdiff_t i = 0;
 
     for(; i <n-4; i+=4)
