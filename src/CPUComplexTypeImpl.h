@@ -118,11 +118,23 @@ Tensor & CPUComplexType<PT>::set_(Tensor & self, Storage source, int64_t storage
     if (storage_offset < 0)
         AT_ERROR("Tensor: invalid storage offset");
 
-
     self_->set_storage_offset(storage_offset);
     // set size
     self_->set_sizes_and_strides(sizes, strides);
     self_->maybe_zero_dim(false);
+    return self;
+}
+
+template <typename PT>
+Tensor & CPUComplexType<PT>::_fill_(Tensor & self, Scalar value) const {
+    const DeviceGuard device_guard(self);
+    auto self_ = checked_tensor_unwrap(self,"self",1, false, Backend::CPU, ScalarType::Float);
+    auto value_ = value.to<std::complex<PT>>();
+
+    if(self_->is_contiguous() || is_transposed(self_)) {
+    }
+
+    THFloatTensor_fill(self_, value_);
     return self;
 }
 
@@ -139,9 +151,6 @@ Scalar CPUComplexType<PT>::_local_scalar_dense(const Tensor & self) const {
     (void)self_ty;
     return at::native::_local_scalar_dense_cpu(/* actuals */ self);
 }
-
-// template <typename PT>
-// Tensor & CPUComplexType<PT>::set_(Tensor & self, )
 
 template <>
 inline const char * CPUComplexType<float>::toString() const {

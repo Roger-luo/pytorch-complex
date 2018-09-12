@@ -33,6 +33,8 @@ struct CPUComplexType: public at::CPUTypeDefault {
     // Tensor & set_(Tensor & self, const Tensor & source) const override;
     // Tensor & set_(Tensor & self) const override;
 
+    Tensor & _fill_(Tensor & self, Scalar value) const override;
+
     void* data_ptr(const Tensor & self) const override;
     Scalar _local_scalar_dense(const Tensor & self) const override;
 
