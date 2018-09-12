@@ -127,53 +127,46 @@ Tensor & CPUComplexType<PT>::set_(Tensor & self, Storage source, int64_t storage
     return self;
 }
 
-template <>
-Tensor & CPUComplexType<double>::_fill_(Tensor & self, Scalar value) const {
-    const DeviceGuard device_guard(self);
-    auto self_ = checked_tensor_unwrap(self,"self",1, false, Backend::CPU, CPUComplexTypeInfo<double>::scalar_type);
-    auto value_ = value.to<std::complex<double>>();
-
-    if(self_->is_contiguous() || is_transposed(self_)) {
-        TH_TENSOR_APPLY_CONTIG(std::complex<double>, self_, simd::Default<std::complex<double>>::fill(self__data, value_, self__len); );
-    } else {
-        TH_TENSOR_APPLY(std::complex<double>, self_,
-            if (self__stride == 1) {
-                simd::Default<std::complex<double>>::fill(self__data, value_, self__size);
-	            self__i = self__size;
-	            self__data += self__stride * self__size;
-	            break;
-            } else {
-                *self__data = value_;
-            }
-        );
-    }
-
-    return self;
+/* NOTE: This C macro here mainly because ISO C++03 14.2/4 
+ * 
+ * When the name of a member template specialization appears after . or -> in a postfix-expression,
+ * or after nested-name-specifier in a qualified-id, and the postfix-expression or qualified-id 
+ * explicitly depends on a template-parameter (14.6.2), the member template name must be prefixed 
+ * by the keyword template. Otherwise the name is assumed to name a non-template.
+ * 
+ * We have TENSOR->data inside the TH_TENSOR_APPLY macro without template, but our implementation via
+ * C++ templates for generic complex number requires a template keyword for data.
+ * 
+ * This is just a workaround, when everything moves to ATen/native, we can use the new protocals.
+ */
+#define IMPLEMENT_FILL(PrecisionType) \
+template <> \
+Tensor & CPUComplexType<PrecisionType>::_fill_(Tensor & self, Scalar value) const { \
+    const DeviceGuard device_guard(self); \
+    auto self_ = checked_tensor_unwrap(self,"self",1, false, Backend::CPU, CPUComplexTypeInfo<PrecisionType>::scalar_type); \
+    auto value_ = value.to<std::complex<PrecisionType>>(); \
+\
+    if(self_->is_contiguous() || is_transposed(self_)) { \
+        TH_TENSOR_APPLY_CONTIG(std::complex<PrecisionType>, self_, simd::Default<std::complex<PrecisionType>>::fill(self__data, value_, self__len); ); \
+    } else { \
+        TH_TENSOR_APPLY(std::complex<PrecisionType>, self_, \
+            if (self__stride == 1) { \
+                simd::Default<std::complex<PrecisionType>>::fill(self__data, value_, self__size); \
+	            self__i = self__size; \
+	            self__data += self__stride * self__size; \
+	            break; \
+            } else { \
+                *self__data = value_; \
+            } \
+        ); \
+    } \
+\
+    return self; \
 }
 
-template <>
-Tensor & CPUComplexType<float>::_fill_(Tensor & self, Scalar value) const {
-    const DeviceGuard device_guard(self);
-    auto self_ = checked_tensor_unwrap(self,"self",1, false, Backend::CPU, CPUComplexTypeInfo<float>::scalar_type);
-    auto value_ = value.to<std::complex<float>>();
+IMPLEMENT_FILL(double)
+IMPLEMENT_FILL(float)
 
-    if(self_->is_contiguous() || is_transposed(self_)) {
-        TH_TENSOR_APPLY_CONTIG(std::complex<float>, self_, simd::Default<std::complex<float>>::fill(self__data, value_, self__len); );
-    } else {
-        TH_TENSOR_APPLY(std::complex<float>, self_,
-            if (self__stride == 1) {
-                simd::Default<std::complex<float>>::fill(self__data, value_, self__size);
-	            self__i = self__size;
-	            self__data += self__stride * self__size;
-	            break;
-            } else {
-                *self__data = value_;
-            }
-        );
-    }
-
-    return self;
-}
 
 template <typename PT>
 void *CPUComplexType<PT>::data_ptr(const Tensor & self) const {
