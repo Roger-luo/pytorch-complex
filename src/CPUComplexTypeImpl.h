@@ -167,6 +167,25 @@ Tensor & CPUComplexType<PrecisionType>::_fill_(Tensor & self, Scalar value) cons
 IMPLEMENT_FILL(double)
 IMPLEMENT_FILL(float)
 
+template <typename PT>
+Tensor &CPUComplexType<PT>::_fill_(Tensor &self, const Tensor & value) const {
+    const DeviceGuard device_guard(self);
+    if (value.dim() == 0) {
+        return static_cast<const TypeExtendedInterface*>(this)->_fill_(self, at::_local_scalar(value));
+    }
+    AT_ERROR("_fill_ only supports a 0-dimensional value tensor, but got tensor "
+        "with ", value.dim(), " dimension(s).");
+}
+
+template <typename PT>
+Tensor & CPUComplexType<PT>::th_zero_(Tensor & self) const {
+    return _fill_(self, Scalar(0.0));
+}
+
+template <typename PT>
+Tensor &CPUComplexType<PT>::native_zero_(Tensor & self) const {
+    return _fill_(self, Scalar(0.0));
+}
 
 template <typename PT>
 void *CPUComplexType<PT>::data_ptr(const Tensor & self) const {
