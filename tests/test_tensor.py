@@ -24,7 +24,11 @@ class TestComplexTensor(unittest.TestCase):
         2 - a
         2 + a
 
+    def test_blas(self):
+        pass
 
+    def test_rand(self):
+        pass
 
 if __name__ == '__main__':
     unittest.main()
