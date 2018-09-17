@@ -34,6 +34,9 @@ struct CPUComplexType: public at::CPUTypeDefault {
     // Tensor & set_(Tensor & self, const Tensor & source) const override;
     // Tensor & set_(Tensor & self) const override;
 
+    Tensor & _cat_out(Tensor & self, TensorList tensors, int64_t dim) const override;
+    Tensor _cat(TensorList tensors, int64_t dim) const override;
+
     Tensor & _fill_(Tensor & self, Scalar value) const override;
     Tensor & _fill_(Tensor & self, const Tensor & value) const override;
 

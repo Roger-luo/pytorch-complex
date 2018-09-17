@@ -132,6 +132,16 @@ Tensor & CPUComplexType<PT>::set_(Tensor & self, Storage source, int64_t storage
     return self;
 }
 
+template <typename PT>
+Tensor & CPUComplexType<PT>::_cat_out(Tensor & self, TensorList tensors, int64_t dim) const {
+    AT_ERROR("_cat_out not implemented");
+};
+
+template <typename PT>
+Tensor CPUComplexType<PT>::_cat(TensorList tensors, int64_t dim) const {
+    AT_ERROR("_cat not implemented");
+};
+
 /* NOTE: This C macro here mainly because ISO C++03 14.2/4 
  * 
  * When the name of a member template specialization appears after . or -> in a postfix-expression,
@@ -217,7 +227,6 @@ inline const char * CPUComplexType<double>::toString() const {
 }
 
 // Linear Algebra
-
 template <typename PT>
 Tensor & CPUComplexType<PT>::_mv_out(Tensor & result, const Tensor & self, const Tensor & vec) const {
     AT_ERROR("_mv_out not implemented");
@@ -234,7 +243,7 @@ Tensor CPUComplexType<PT>::_mm(const Tensor &self, const Tensor &mat2) const {
 }
 
 template <typename PT>
-Tensor CPUComplexType<PT>::_mm_out(Tensor & result, const Tensor & self, const Tensor & mat2) const {
+Tensor & CPUComplexType<PT>::_mm_out(Tensor & result, const Tensor & self, const Tensor & mat2) const {
     AT_ERROR_("_mm_out not implemented");
 }
 
