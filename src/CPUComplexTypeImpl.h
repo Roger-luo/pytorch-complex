@@ -11,6 +11,11 @@ ScalarType CPUComplexType<PT>::scalarType() const {
 }
 
 template <typename PT>
+caffe2::TypeMeta CPUComplexType<PT>::typeMeta() const {
+    return scalarTypeToTypeMeta(CPUComplexTypeInfo<PT>::scalar_type);
+}
+
+template <typename PT>
 Backend CPUComplexType<PT>::backend() const {
     return Backend::CPU;
 }
@@ -65,7 +70,7 @@ Tensor CPUComplexType<PT>::tensor(IntList sizes, IntList strides) const {
     }
 
     Storage s{c10::make_intrusive<StorageImpl>(
-        scalarTypeToDataType(CPUComplexTypeInfo<PT>::scalar_type),
+        scalarTypeToTypeMeta(CPUComplexTypeInfo<PT>::scalar_type),
         numel,
         getCPUAllocator(),
         /* resizable */ true)};
@@ -83,7 +88,7 @@ Tensor CPUComplexType<PT>::tensor(IntList size) const {
 template <typename PT>
 Tensor CPUComplexType<PT>::tensor() const {
     Storage s{c10::make_intrusive<StorageImpl>(
-        scalarTypeToDataType(CPUComplexTypeInfo<PT>::scalar_type),
+        scalarTypeToTypeMeta(CPUComplexTypeInfo<PT>::scalar_type),
         0,
         getCPUAllocator(),
         /* resizable */ true)};

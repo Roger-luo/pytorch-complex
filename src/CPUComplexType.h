@@ -12,7 +12,8 @@ struct CPUComplexType: public at::CPUTypeDefault {
     CPUComplexType()
     : CPUTypeDefault(CPUTensorId(), /*is_variable=*/false, /*is_undefined=*/false) {}
 
-    ScalarType scalarType() const override;
+    virtual ScalarType scalarType() const override;
+    virtual caffe2::TypeMeta typeMeta() const override;
     Backend backend() const override;
     const char * toString() const override;
     size_t elementSizeInBytes() const override;
