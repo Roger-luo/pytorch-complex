@@ -216,4 +216,26 @@ inline const char * CPUComplexType<double>::toString() const {
     return "CPUComplexType<double>";
 }
 
+// Linear Algebra
+
+template <typename PT>
+Tensor & CPUComplexType<PT>::_mv_out(Tensor & result, const Tensor & self, const Tensor & vec) const {
+    AT_ERROR("_mv_out not implemented");
+}
+
+template <typename PT>
+Tensor CPUComplexType<PT>::_mv(const Tensor & self, const Tensor & vec) const {
+    AT_ERROR("_mv_out not implemented");
+}
+
+template <typename PT>
+Tensor CPUComplexType<PT>::_mm(const Tensor &self, const Tensor &mat2) const {
+    AT_ERROR("_mm not implemented");
+}
+
+template <typename PT>
+Tensor CPUComplexType<PT>::_mm_out(Tensor & result, const Tensor & self, const Tensor & mat2) const {
+    AT_ERROR_("_mm_out not implemented");
+}
+
 } // at

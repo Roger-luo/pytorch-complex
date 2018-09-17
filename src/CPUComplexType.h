@@ -42,6 +42,11 @@ struct CPUComplexType: public at::CPUTypeDefault {
     void* data_ptr(const Tensor & self) const override;
     Scalar _local_scalar_dense(const Tensor & self) const override;
 
+    // LinearAlgebra
+    Tensor & _mv_out(Tensor & result, const Tensor & self, const Tensor & vec) const override;
+    Tensor _mv(const Tensor & self, const Tensor & vec) const override;
+    Tensor & _mm_out(Tensor & result, const Tensor & self, const Tensor & mat2) const override;
+    Tensor _mm(const Tensor & self, const Tensor & mat2) const override;
 };
 
 } // namespace at
