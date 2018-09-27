@@ -118,8 +118,7 @@ Tensor & CPUComplexType<PT>::set_(Tensor & self, Storage source, int64_t storage
         }
 
         // steal storage
-        c10::raw::intrusive_ptr::incref(storage_ptr);
-        self_->storage_ = Storage(storage_ptr);
+        self_->storage_ = at::Storage(c10::intrusive_ptr<THStorage>::reclaim(storage_ptr));
     }
 
     if (storage_offset < 0)
@@ -134,7 +133,11 @@ Tensor & CPUComplexType<PT>::set_(Tensor & self, Storage source, int64_t storage
 
 template <typename PT>
 Tensor & CPUComplexType<PT>::_cat_out(Tensor & self, TensorList tensors, int64_t dim) const {
-    AT_ERROR("_cat_out not implemented");
+    const DeviceGuard device_guard(self);
+    // auto self_ = checked_tensor_unwrap(self, "self", 1, false, Backend::CPU, CPUComplexTypeInfo<PT>::scalar_type);
+    // auto tensors_ = checked_tensor_unwrap(tensors, "tensors", 1, Backend::CPU, CPUComplexTypeInfo<PT>::scalar_type);
+
+    AT_ERROR("catArray is not implemented, it's in THTensorMoreMath.cpp");
 };
 
 template <typename PT>
@@ -244,7 +247,7 @@ Tensor CPUComplexType<PT>::_mm(const Tensor &self, const Tensor &mat2) const {
 
 template <typename PT>
 Tensor & CPUComplexType<PT>::_mm_out(Tensor & result, const Tensor & self, const Tensor & mat2) const {
-    AT_ERROR_("_mm_out not implemented");
+    AT_ERROR("_mm_out not implemented");
 }
 
 } // at
