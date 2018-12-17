@@ -9,18 +9,17 @@
 // #include "THTensorApply.h"
 #include <TH/THTensorApply.h>
 
-#include <ATen/TensorImpl.h>
+#include <c10/core/TensorImpl.h>
 #include <ATen/CPUGenerator.h>
-#include <ATen/TensorImpl.h>
 #include <ATen/Allocator.h>
-#include <ATen/DeviceGuard.h>
+#include <c10/DeviceGuard.h>
 #include <ATen/NativeFunctions.h>
-#include <ATen/core/UndefinedTensorImpl.h>
-#include <ATen/core/intrusive_ptr.h>
+#include <c10/core/UndefinedTensorImpl.h>
+#include <c10/util/intrusive_ptr.h>
 #include <ATen/Utils.h>
 #include <ATen/WrapDimUtils.h>
-#include <ATen/core/Half.h>
-#include <ATen/core/optional.h>
+#include <c10/Half.h>
+#include <c10/util/Optional.h>
 
 #include <cstddef>
 #include <functional>

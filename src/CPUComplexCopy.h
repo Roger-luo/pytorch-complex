@@ -129,7 +129,8 @@ Tensor & CPUComplexType<PT>::s_copy_(Tensor & dst, const Tensor & src, bool non_
             std::cout << "copy half" << std::endl;
             break;
         default:
-            return src.type()._s_copy_from(src, dst, non_blocking);
+            at::_s_copy_from(src, dst, non_blocking);
+            return dst;
     }
 
     dst.unsafeGetTensorImpl()->maybe_zero_dim(src.dim() == 0);
@@ -137,7 +138,7 @@ Tensor & CPUComplexType<PT>::s_copy_(Tensor & dst, const Tensor & src, bool non_
 }
 
 template <typename PT>
-Tensor & CPUComplexType<PT>::_s_copy_from(const Tensor & src, Tensor & dst, bool non_blocking) const {
+Tensor CPUComplexType<PT>::_s_copy_from(const Tensor & src, const Tensor & dst, bool non_blocking) const {
     // This handles the copy from other types
 
     switch (dst.type().ID()) {
@@ -163,7 +164,7 @@ Tensor & CPUComplexType<PT>::_s_copy_from(const Tensor & src, Tensor & dst, bool
             CPUCopy<int16_t, std::complex<PT>>::eval(dst.unsafeGetTensorImpl(), src.unsafeGetTensorImpl());
             break;
         default:
-            AT_ERROR("copy does not support ", src.type().toString(), " to ", dst.type().toString(), " copy (s_copy_from case).");
+            AT_ERROR("copy does not support ", src.type().toString(), " to ", dst.type().toString(), " copy (copy_from case).");
     }
     dst.unsafeGetTensorImpl()->maybe_zero_dim(src.dim() == 0);
     return dst;
