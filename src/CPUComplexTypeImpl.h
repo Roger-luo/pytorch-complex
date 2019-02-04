@@ -105,7 +105,7 @@ Tensor & CPUComplexType<PT>::set_(Tensor & self, Storage source, int64_t storage
     auto source_ = checked_storage(source,"source",2, DeviceType::CPU, at::scalarTypeToDataType(CPUComplexTypeInfo<PT>::scalar_type));
 
     StorageImpl *storage_ptr = source.unsafeGetStorageImpl();
-    StorageImpl *self_storage_ptr = self_->storage_.unsafeGetStorageImpl();
+    StorageImpl *self_storage_ptr = self_->storage().unsafeGetStorageImpl();
 
     if (self_storage_ptr != storage_ptr)
     {
@@ -114,7 +114,7 @@ Tensor & CPUComplexType<PT>::set_(Tensor & self, Storage source, int64_t storage
         }
 
         // steal storage
-        self_->storage_ = at::Storage(c10::intrusive_ptr<THStorage>::reclaim(storage_ptr));
+        self_->set_storage(at::Storage(c10::intrusive_ptr<THStorage>::reclaim(storage_ptr)));
     }
 
     if (storage_offset < 0)

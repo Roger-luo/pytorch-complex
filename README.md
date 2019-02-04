@@ -4,7 +4,9 @@ Complex-valued tensor support for [PyTorch](https://github.com/pytorch/pytorch).
 
 ## Usage
 
-**Warning**: this package may require a fresh new build of the PyTorch master branch.
+**Warning**: this package requires a fresh build of PyTorch
+revision 6cb593b88cb0c411690b4957850058329526d87b.  Other
+revisions may work, but you will void the warranty.
 
 Build this plugin just like a normal Python package:
 

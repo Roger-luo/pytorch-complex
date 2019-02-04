@@ -11,7 +11,7 @@
 
 #include <c10/core/TensorImpl.h>
 #include <ATen/CPUGenerator.h>
-#include <ATen/Allocator.h>
+#include <c10/core/Allocator.h>
 #include <c10/core/DeviceGuard.h>
 #include <ATen/NativeFunctions.h>
 #include <c10/core/UndefinedTensorImpl.h>
