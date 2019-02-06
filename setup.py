@@ -59,7 +59,7 @@ ext_modules = [
     CppExtension(
         "torch_complex.cpp",
         ["src/module.cpp"],
-        extra_compile_args=["-g"],
+        extra_compile_args=["-g", "-stdlib=libc++", "-std=c++11"],
     )
 ]
 
