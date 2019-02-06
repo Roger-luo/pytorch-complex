@@ -27,3 +27,7 @@ import torch_complex.torch as torch
 ```
 
 then the complex tensor support will be in `torch` module. Use it just like the other tensor types.
+
+## Contribution
+
+Please read [Pytorch/#755](https://github.com/pytorch/pytorch/issues/755) first.
