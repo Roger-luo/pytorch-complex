@@ -10,7 +10,8 @@ Complex-valued tensor support for [PyTorch](https://github.com/pytorch/pytorch).
 revision 6cb593b88cb0c411690b4957850058329526d87b.  Other
 revisions may work, but you will void the warranty.
 
-Build this plugin just like a normal Python package:
+To use this commit, `git clone` pytorch and checkout to this commit, then build pytorch from soruce.
+After you build PyTorch successfully, you will be able to build this plugin just like a normal Python package:
 
 ```sh
 python setup.py install
