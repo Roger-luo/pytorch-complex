@@ -2,6 +2,8 @@
 
 Complex-valued tensor support for [PyTorch](https://github.com/pytorch/pytorch). (Work in progress)
 
+**Warning**: This package is at very early stage, do not use it.
+
 ## Usage
 
 **Warning**: this package requires a fresh build of PyTorch
