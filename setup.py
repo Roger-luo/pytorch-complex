@@ -1,5 +1,6 @@
 from io import open
 
+import platform
 import os, shutil, torch
 from setuptools import setup, find_packages
 import distutils.command.clean
@@ -55,11 +56,16 @@ cmdclass = {
     'clean': clean,
 }
 
+if platform.system() == 'Darwin':
+    extra_compile_args = ["-g", "-stdlib=libc++", "-std=c++11"]
+else:
+    extra_compile_args = ["-g"]
+
 ext_modules = [
     CppExtension(
         "torch_complex.cpp",
         ["src/module.cpp"],
-        extra_compile_args=["-g", "-stdlib=libc++", "-std=c++11"],
+        extra_compile_args=extra_compile_args,
     )
 ]
 
